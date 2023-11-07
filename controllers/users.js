@@ -6,7 +6,7 @@ const { ErrorHandler } = require("../middlewares/error.js");
 
 
 //login user
-const login = async (req,res)=>{
+const login = async (req,res,next)=>{
   try {
     
   const {email,password} = req.body;
@@ -15,7 +15,9 @@ const login = async (req,res)=>{
 
   if(!user) return next(new ErrorHandler("Invalid Email or password",400))
 
-  const isMatch = bcrypt.compare(password,user.password)
+  const isMatch = await bcrypt.compare(password,user.password)
+
+  
 
   if(!isMatch) return next(new ErrorHandler("User Already Exits",400))
 

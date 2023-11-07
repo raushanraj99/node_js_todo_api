@@ -33,8 +33,10 @@ const login = async (req,res,next)=>{
 const register = async (req, res,next) => {
   try {
     const {name,email,password} = req.body
-  let user = await User.findOne({email});
-  
+    let user = await User.findOne({email});
+    
+    
+    res.setHeader('Access-Control-Allow-Origin', 'https://todo-app-react-snowy-five.vercel.app');
 
   if(user) return next(new ErrorHandler("User Already Exits",400))
 

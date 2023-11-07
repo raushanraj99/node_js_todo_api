@@ -30,6 +30,9 @@ app.use('/api/v1/task',taskRouter)
 
 
 app.get("/", (req, res) => {
+
+  res.setHeader('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
+
   res.send("app.js is Working fine");
 });
 

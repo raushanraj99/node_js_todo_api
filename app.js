@@ -1,26 +1,32 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const userRouter = require('./routes/user')
+const userRouter = require('./routes/user.js');
+const taskRouter = require('./routes/task.js');
+const cors = require("cors")
 
-const app = express();
+const dotenv = require('dotenv');
+const cookieParser = require("cookie-parser");
+const { errorMiddleware } = require("./middlewares/error.js");
+dotenv.config({
+  path: './data/config.env'
+})
+
+
+app= express();
+module.exports = app 
 
 //using middleware
 app.use(express.json()) 
-app.use('/users',userRouter)
+app.use(cookieParser())
+    // setup for production
+app.use(cors({
+  origin:[process.env.FRONTEND_URL],
+  methods:["GET","POST","PUT","DELETE"],
+  credentials:true
+}))
 
-
-// database connected 
-mongoose
-  .connect("mongodb://127.0.0.1:27017", {
-    dbName: "backendapi",
-  })
-  .then(() => {
-    console.log("Database connected");
-  })
-  .catch(() => {
-    console.error("Failed to connect database");
-  });
-
+//using routes
+app.use('/api/v1/users',userRouter)
+app.use('/api/v1/task',taskRouter)
 
 
 app.get("/", (req, res) => {
@@ -28,6 +34,5 @@ app.get("/", (req, res) => {
 });
 
 
-app.listen(4000, () => {
-  console.log("Server is working fine ");
-});
+// using error middle ware 
+app.use(errorMiddleware)
